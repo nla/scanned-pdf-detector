@@ -1,5 +1,6 @@
 package fr.bnf.toolslab;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +29,15 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
     List<DimensionInfo> imageDimensions;
     private Map<COSStream, Integer> processedInlineImages = new HashMap<>();
     private AtomicInteger inlineImageCounter = new AtomicInteger(0);
+    private final int numSamples; // Number of pages to sample
+
+    public StrictPdfBoxScanDetector(int numSamples) {
+      this.numSamples = numSamples;
+    }
+
+    public StrictPdfBoxScanDetector() {
+      this(MAX_SAMPLES); // Default to 5 samples
+    }
 
     @Override
     public void init(FileDescriptor fd) {
@@ -67,15 +77,14 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
           return;
         }
 
-        // Second heuristic: pick some pages and look if the image covers
+        // Second heuristic: pick the first x pages and look if the image covers
         // all the page
-        int nbSamples = Math.min(nbPages, MAX_SAMPLES);
-        List<Integer> pagesToTest = pickSamples(nbSamples, nbPages);
+        int nbSamples = Math.min(nbPages, numSamples);
 
         // Classify all the dpiFound (could be 0)
         DpiCounter counter = new DpiCounter();
 
-        for (int pageNum : pagesToTest) {
+        for (int pageNum = 0; pageNum < nbSamples; pageNum++) {
           DimensionInfo dimPage = pageDimensions.get(pageNum);
           DimensionInfo dimImage = imageDimensions.get(pageNum);
           LOGGER.fine("Page [" + pageNum + "] dimension " + dimImage);
@@ -150,6 +159,15 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
       }
       return nbImagesInPage;
+    }
+
+    public static boolean isScan(File file, int samples) throws IOException {
+      FileDescriptor fileDescriptor = new FileDescriptor(file);
+
+      StrictPdfBoxScanDetector strictPdfBoxScanDetector = new StrictPdfBoxScanDetector(samples);
+      strictPdfBoxScanDetector.init(fileDescriptor);
+      strictPdfBoxScanDetector.parse();
+      return fileDescriptor.isScan();
     }
   }
 
