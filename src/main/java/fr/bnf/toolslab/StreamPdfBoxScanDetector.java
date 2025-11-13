@@ -125,7 +125,7 @@ public class StreamPdfBoxScanDetector extends AbstractScanDetector {
           new ImageGraphicsEngine(page, processedInlineImages, inlineImageCounter);
       engine.run();
       nbImagesInPage = inlineImageCounter.get() - initialNumber;
-      if (nbImagesInPage == 0) {
+      if (nbImagesInPage == 0 || engine.getImageDimensions().isEmpty()) {
         imageDimensions.add(DimensionInfo.EMPTY);
       } else {
         imageDimensions.add(engine.getImageDimensions().get(0));

@@ -3,7 +3,7 @@
   <groupId>au.gov.nla</groupId>
   <artifactId>scanned-pdf-detector</artifactId>
   <packaging>jar</packaging>
-  <version>1.2</version>
+  <version>1.3</version>
   <name>scannedPdf</name>
   <description>Little experiment to detect scanned vs native pdfs</description>
   <url>https://github.com/tledoux/scannedPdf</url>
