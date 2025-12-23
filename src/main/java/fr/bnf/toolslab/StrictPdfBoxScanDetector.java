@@ -125,8 +125,8 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
         }
       } catch (IOException e) {
         e.printStackTrace();
+        fd.setScan(false);
         fd.setValid(false);
-        //        throw e;
       } finally {
         fd.setTimeToProcess(System.currentTimeMillis() - beginTime);
       }
@@ -156,7 +156,7 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
         }
       } catch (IOException e) {
         e.printStackTrace();
-
+        return 0;
       }
       return nbImagesInPage;
     }
