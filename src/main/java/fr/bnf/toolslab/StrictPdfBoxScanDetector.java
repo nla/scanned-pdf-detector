@@ -126,7 +126,7 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
       } catch (IOException e) {
         e.printStackTrace();
         fd.setValid(false);
-        throw e;
+        //        throw e;
       } finally {
         fd.setTimeToProcess(System.currentTimeMillis() - beginTime);
       }
